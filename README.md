@@ -48,10 +48,11 @@ Each computer is connected to an STM32 L432KC MCU using UART2. The first one is 
 ![Circuit Design](https://i.imgur.com/4H4VYrq.png)
 https://crcit.net/c/672a51e4db6743438d306a17ec919472
 
-### Key:
-Red: LED Transistors
-Orange: 8x IR Emitter Diode (Transmitter)
-Blue: 8x IR Receiver Module
+Key:
+
+- Red: LED Transistors
+- Orange: 8x IR Emitter Diode (Transmitter)
+- Blue: 8x IR Receiver Module
 
 The circuit diagram is separated into 2 parts. The first part is the street part and the second part is the control part. In the first part, the street part, we will be using a microcontroller of type STM32 L432KC. This part will be responsible for detecting whether an object passes between the I. R. emitter (orange) and receiver (blue). Whenever an object passes between them, the LED will increase its intensity to the maximum pre-set by the user (e.g. 95%). In that case, that first LED to detect the object and the two ones in front of it will light up to show the car driver the way ahead of it. The resistors are used to control the voltage across the components. The exact values of them depend on our tests and those available in the market. An object is detected in front of the LED when the value detected continuously by the I. R. receiver is blocked. This is also used to measure the speed of the vehicles, which is then compared to the speed limit i.e. acts as a radar.
 
