@@ -45,7 +45,7 @@ General flow:
 Each computer is connected to an STM32 L432KC MCU using UART2. The first one is connected to the circuit with the IR sensors, LEDs, resistors, etc. (the street model), and the other to the LCD and keypad (user interface). Both MCUs communicate together using UART. The user inputs the initial specifications which are received by the microcontroller connected directly to the keypad then transmits it to the other microcontroller to apply it to the LEDs. Whenever any interrupts occur to the system (cars pass by), the second microcontroller detects the change and produces the corresponding output to this interrupt. It also transmits the needed information to the other board which is connected directly to the LCD, to display the updated costs and energy consumption. 
 
 ## Circuit Design
-
+![Circuit Design](https://i.imgur.com/4H4VYrq.png)
 https://crcit.net/c/672a51e4db6743438d306a17ec919472
 
 ### Key:
