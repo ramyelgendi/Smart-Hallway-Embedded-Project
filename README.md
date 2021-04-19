@@ -28,7 +28,7 @@ Going into more detail, we have a long street with 8 LEDs on the side acting as 
 * 4x4 Keypad
 
 ## System Architecture
-
+![System Architecture](https://i.imgur.com/ySsuPK8.png)
 https://drive.google.com/file/d/15veVSkqlQk2XM-U8fpAyWf5LeOaYdK1q/view?usp=sharing
 
 ### IR Sensors:
@@ -58,6 +58,7 @@ The circuit diagram is separated into 2 parts. The first part is the street part
 
 In the second part, there is a keypad and LCD display. The keypad is used to take user inputs and the LCD displays used to display the pre-set values by the user and more information about energy consumption, cost, the number of street lights that are on, the speed limit, minimum and maximum light intensity, etc. Both microcontroller units communicate with each other, exchanging data and variables using UART.
 
-### Presentation Video: 
+### Presentation Slides: 
+https://docs.google.com/presentation/d/1oRczkyA0FNmJV6AnsQgVgYWo1QZQhZX-Yu2WuhUkztM/edit?usp=sharing
 
 ## Thank you!
