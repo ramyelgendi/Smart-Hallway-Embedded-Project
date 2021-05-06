@@ -50,9 +50,16 @@ Each computer is connected to an STM32 L432KC MCU using UART2. The first one is 
 - Orange: 8x IR Emitter Diode (Transmitter)
 - Blue: 8x IR Receiver Module
 - Red: Buzzer
-### Description:
-The circuit diagram is separated into 2 parts. The first part is the hallway part and the second part is the control part. In the first part, the hallway part, we will be using a microcontroller of type STM32 L432KC. This part will be responsible for detecting whether someone passes between the I. R. emitter (orange) and receiver (blue). Whenever someone passes between them, the LED will turn on. A person is detected in front of the LED when the value detected continuously by the IR receiver is blocked. This is also used to measure the number of people in the hallway, which is then compared to the maximum number required for safe social distancing. If the number exceeds the maximum limit, the buzzer will be triggered.
 
-In the second part, there is a keypad and LCD display. The keypad is used to take user inputs and the LCD displays used to display the pre-set values by the user and more information about energy consumption, cost, the number of hallway lights that are on, social distancing information, etc. Both microcontroller units communicate with each other, exchanging data and variables using UART.
+## Technical Challenges
+
+### Solved:
+* We were not able to use IR transmitters and receivers (needed a lens to direct the IR rays uniformly)
+* We used instead the PIR sensor (motion detector) which had unfamiliar aspects that we needed to setup such as sensitivity and delay
+* We used a 4x4 keypad which requires not so simple connections, so we developed a class for it to detect the GPIO pins connected to the rows and columns and outputs the corresponding key pressed in an array.
+
+### Unsolved:
+* UART connection between both microcontrollers
+* LCD Display 
 
 ## Thank you!
