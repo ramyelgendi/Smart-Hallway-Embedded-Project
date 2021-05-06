@@ -44,7 +44,7 @@ Each computer is connected to an STM32 L432KC MCU using UART2. The first one is 
 
 ## Circuit Design
 
-![Circuit-Design](https://imgur.com/a/mqfr67q)
+![Circuit-Design](https://imgur.com/a/wyD0c0L)
 
 ### Key:
 - Orange: 8x IR Emitter Diode (Transmitter)
