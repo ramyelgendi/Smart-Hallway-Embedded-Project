@@ -18,19 +18,18 @@ Going into more detail, we have a long hallway with 8 LEDs acting as ceiling lig
 
 * 8x LEDs
 * 1x Buzzer
-* 8x IR Emitter Diode (Transmitter)
-* 8x IR Receiver Module (Receiver)
-* Resistors
-
-* LCD Display
+* 8x PIR Sensors
+* 4x 1K Ohm Resistors
+* 16x2 LCD Display
 * 4x4 Keypad
+* Potentiometer
 
 ## System Architecture
 
 ![System-Architecture](https://imgur.com/a1B95ey.png)
 
-### IR Sensors:
-The infrared(IR) sensor consists of two components: IR LED and a photodiode. IR LED is responsible for transmitting IR rays in all directions that are invisible to the human eye. The photodiode produces a signal whenever it detects infrared rays. It is active low, which means the output signal is high unless there are detected infrared rays. In this setup, each IR LED has a corresponding photodiode right across the hallway, which means that the photodiode always outputs a high signal. When a person moves, it blocks the infrared signals produced by the IR LED from the photodiode, which means that the photodiode produces an output signal and therefore action is taken by the MCU to produce the corresponding output signals to turn on the 3 LEDs ahead of the moving person in the hallway. The LEDs are then turned off after a fixed amount of time after the person passes them.
+### PIR Sensors:
+The passive infrared sensor (PIR sensor) is responsible for detecting any motion detection. Whenever any object passes by it, it sends a signal to the microcontroller that a moving object was detected. It is active high, which means that the output signal is low unless there is motion. In this setup, each PIR sensor has a corresponding LED. When a person moves, the PIR sensor produces an output signal and therefore action is taken by the MCU to produce the corresponding output signals to turn on the specified number of LEDs ahead of the moving person in the hallway. The LEDs are then turned off after a fixed amount of time after the person passes them.
 
 
 ### Microcontrollers:
@@ -41,7 +40,7 @@ In this project, we will use two STM32 Nucleo boards because the number of pins 
 The Universal Asynchronous Receiver/Transmitter protocol (UART) is used to communicate between the two microcontrollers. The board connected to the keypad will transform the user input to the other board. Also, the information regarding the energy consumption and its costs is sent to the board connected to the LCD.
 
 General flow:
-Each computer is connected to an STM32 L432KC MCU using UART2. The first one is connected to the circuit with the IR sensors, LEDs, resistors, etc. (the hallway model), and the other to the LCD and keypad (user interface). Both MCUs communicate together using UART. The user inputs the initial specifications which are received by the microcontroller connected directly to the keypad then transmits it to the other microcontroller to apply it to the LEDs. Whenever any interrupts occur to the system (people pass by), the second microcontroller detects the change and produces the corresponding output to this interrupt. It also transmits the needed information to the other board which is connected directly to the LCD, to display the updated costs and energy consumption. 
+Each computer is connected to an STM32 L432KC MCU using UART2. The first one is connected to the circuit with the PIR sensors, LEDs, etc. (the hallway model), and the other to the LCD and the keypad (and its resistors). Both MCUs communicate together using UART. The user inputs the initial specifications which are received by the microcontroller connected directly to the keypad then transmits it to the other microcontroller to apply it to the LEDs. Whenever any interrupts occur to the system (people pass by), the second microcontroller detects the change and produces the corresponding output to this interrupt. It also transmits the needed information to the other board which is connected directly to the LCD, to display the updated costs and energy consumption. 
 
 ## Circuit Design
 
