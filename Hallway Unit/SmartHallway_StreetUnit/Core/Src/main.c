@@ -79,7 +79,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 		uint8_t LED_ON_COUNTER;
-	  uint8_t LED_TRACKER[8] = {0,0,0,0,0,0,0,0};
+	  int LED_TRACKER[8] = {0,0,0,0,0,0,0,0};
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -108,7 +108,8 @@ int main(void)
 	uint8_t TOTAL_MAX_LEDS=2;
 	uint8_t THRESHOLD=2;
 	uint8_t sumOfPeople=0;
-	  
+	int SetActiveTime=900;
+
 		HAL_UART_Transmit(&huart1,(uint8_t*)"\r\nEnter Total Amount of LEDs\r\n",sizeof("\r\nEnter Total Amount of LEDs\r\n"),HAL_MAX_DELAY);
 		HAL_UART_Receive(&huart1,&TOTAL_MAX_LEDS,sizeof(TOTAL_MAX_LEDS),HAL_MAX_DELAY);
 	  HAL_UART_Transmit(&huart1,&TOTAL_MAX_LEDS,sizeof(TOTAL_MAX_LEDS),HAL_MAX_DELAY);
@@ -123,6 +124,7 @@ int main(void)
 				HAL_GPIO_WritePin(LED_PORTS[i], LED_PINS[i], GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(BUZZER_PORT, BUZZER_PIN, GPIO_PIN_RESET);	
 		
+		
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -131,19 +133,22 @@ int main(void)
   {
 		LED_ON_COUNTER=0;
 		for(int i=0;i<TOTAL_MAX_LEDS;i++){
-			if((HAL_GPIO_ReadPin(IR_PORTS[i],IR_PINS[i])) == 1){
+			if(LED_TRACKER[i]>0)
 				HAL_GPIO_WritePin(LED_PORTS[i], LED_PINS[i], 1);
+			else
+				HAL_GPIO_WritePin(LED_PORTS[i], LED_PINS[i], GPIO_PIN_RESET);
+
+			if((HAL_GPIO_ReadPin(IR_PORTS[i],IR_PINS[i])) == 1){
+				LED_TRACKER[i]=SetActiveTime;
 				while(HAL_GPIO_ReadPin(IR_PORTS[i],IR_PINS[i]) == 1){};
 				// ACTIVE HIGH
 				if(i==0 && sumOfPeople<9)sumOfPeople++;
 				else if(i==TOTAL_MAX_LEDS-1 && sumOfPeople>0)sumOfPeople--;
 				LED_ON_COUNTER++;
-				LED_TRACKER[i]=1;
 			}
-			else{
-				HAL_GPIO_WritePin(LED_PORTS[i], LED_PINS[i], GPIO_PIN_RESET);
+			
+			if(sumOfPeople==0)
 				LED_TRACKER[i]=0;
-			}
 		
 // ========== FOR TESTING ===============
 			if(LED_TRACKER[i]){
@@ -154,6 +159,8 @@ int main(void)
 				HAL_UART_Transmit(&huart2,LED_DISPLAY,sizeof(LED_DISPLAY),HAL_MAX_DELAY);				
 			}
 // ======================================
+			if(LED_TRACKER[i]>0)
+				LED_TRACKER[i]--;
 		}
 		if(sumOfPeople>=THRESHOLD){
 			HAL_GPIO_WritePin(BUZZER_PORT, BUZZER_PIN,1);
@@ -166,11 +173,14 @@ int main(void)
 		HAL_UART_Transmit(&huart2,(uint8_t*)"\r\n",sizeof("\r\n"),HAL_MAX_DELAY);																				// For Testing
 		uint8_t display[20] = {'T','o','t','a','l',' ','P','e','o','p','l','e',' ','I','n',' ',sumOfPeople+'0',' ','\r','\n'};						// For Testing
 		HAL_UART_Transmit(&huart2,display,sizeof(display),HAL_MAX_DELAY);																				// For Testing
+			
+						
+		//uint8_t display2[20] = {'A','c','t','i','v','e',' ','T','i','m','e',':',' ',ActiveTime/10000+'0',' ','s','e','c','\r','\n'};						// For Testing
+		//HAL_UART_Transmit(&huart2,display2,sizeof(display2),HAL_MAX_DELAY);																				// For Testing
 		HAL_UART_Transmit(&huart2,(uint8_t*)"\r\n",sizeof("\r\n"),HAL_MAX_DELAY);																				// For Testing
 		//HAL_UART_Transmit(&huart1 , &LED_ON_COUNTER , sizeof(LED_ON_COUNTER) ,HAL_MAX_DELAY);									// Sending Over to another MCU
 		//HAL_UART_Transmit(&huart1 , LED_TRACKER , sizeof(LED_TRACKER) ,HAL_MAX_DELAY);									// Sending Over to another MCU
 
-		//HAL_Delay(2000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
