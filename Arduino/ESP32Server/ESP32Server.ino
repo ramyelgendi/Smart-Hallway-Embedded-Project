@@ -1,14 +1,3 @@
-/*
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp32-esp-now-wi-fi-web-server/
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files.
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-*/
-
 #include <esp_now.h>
 #include <WiFi.h>
 #include "ESPAsyncWebServer.h"
@@ -38,10 +27,10 @@ AsyncEventSource events("/events");
 void OnDataRecv(const uint8_t * mac_addr, const uint8_t *incomingData, int len) { 
   // Copies the sender mac address to a string
   char macStr[18];
-  Serial.print("Packet received from: ");
+  // Serial.print("Packet received from: ");
   snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
-  Serial.println(macStr);
+  // Serial.println(macStr);
   memcpy(&incomingReadings, incomingData, sizeof(incomingReadings));
   
   board["id"] = incomingReadings.id;
@@ -51,9 +40,15 @@ void OnDataRecv(const uint8_t * mac_addr, const uint8_t *incomingData, int len) 
   String jsonString = JSON.stringify(board);
   events.send(jsonString.c_str(), "new_readings", millis());
 
-  char arr[2]={incomingReadings.type,incomingReadings.value}; 
-   Serial.write(arr);  
-
+//  char arr[2];
+//  char first = "P"; 
+//  char second = incomingReadings.value;
+//  strcpy(arr, first);
+//  strcat(arr, second);
+  
+  // char arr[2]={incomingReadings.type,incomingReadings.value}; 
+   Serial.write(incomingReadings.type);  
+   Serial.write(incomingReadings.value);  
   
   //Serial.printf("Board ID %u: %u bytes\n", incomingReadings.id, len);
   //Serial.printf("t value: %4.2f \n", incomingReadings.temp);
@@ -73,9 +68,9 @@ const char index_html[] PROGMEM = R"rawliteral(
     html {font-family: Arial; display: inline-block; text-align: center;}
     p {  font-size: 1.2rem;}
     body {  margin: 0;}
-    .topnav { overflow: hidden; background-color: #2f4468; color: white; font-size: 1.7rem; }
+    .topnav { overflow: hidden; background-color: #2f4468; ; font-size: 1.7rem; }
     .content { padding: 20px; }
-    .card { background-color: white; box-shadow: 2px 2px 12px 1px rgba(140,140,140,.5); }
+    .card { background-; box-shadow: 2px 2px 12px 1px rgba(140,140,140,.5); }
     .cards { max-width: 700px; margin: 0 auto; display: grid; grid-gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
     .reading { font-size: 2.8rem; }
     .packet { color: #bebebe; }
@@ -144,16 +139,16 @@ void setup() {
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.println("Setting as a Wi-Fi Station..");
+//    Serial.println("Setting as a Wi-Fi Station..");
   }
-  Serial.print("Station IP Address: ");
-  Serial.println(WiFi.localIP());
-  Serial.print("Wi-Fi Channel: ");
-  Serial.println(WiFi.channel());
+//  Serial.print("Station IP Address: ");
+//  Serial.println(WiFi.localIP());
+//  Serial.print("Wi-Fi Channel: ");
+//  Serial.println(WiFi.channel());
 
   // Init ESP-NOW
   if (esp_now_init() != ESP_OK) {
-    Serial.println("Error initializing ESP-NOW");
+//    Serial.println("Error initializing ESP-NOW");
     return;
   }
   
@@ -167,7 +162,7 @@ void setup() {
    
   events.onConnect([](AsyncEventSourceClient *client){
     if(client->lastId()){
-      Serial.printf("Client reconnected! Last message ID that it got is: %u\n", client->lastId());
+//      Serial.printf("Client reconnected! Last message ID that it got is: %u\n", client->lastId());
     }
     // send event with message "hello!", id current millis
     // and set reconnect delay to 1 second
