@@ -61,6 +61,8 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+uint8_t xtemp='0';
+uint8_t LED_ON_COUNTER=0;
 
 /* USER CODE END 0 */
 
@@ -71,7 +73,7 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	  int LED_TRACKER[2] = {0,0};
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -96,16 +98,55 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
-
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+	int SetActiveTime=20;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		HAL_UART_Transmit(&huart1,(uint8_t*)"s",sizeof("s"),HAL_MAX_DELAY);
-		HAL_Delay(1000);
+		LED_ON_COUNTER=0;
+			if(LED_TRACKER[0]>0){
+				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, 1);
+				LED_ON_COUNTER++;
+			}
+			else{
+				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+				LED_ON_COUNTER--;
+			}
+			if(LED_TRACKER[1]>0){
+				LED_ON_COUNTER++;
+				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, 1);
+			}
+			else{
+				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+				LED_ON_COUNTER--;
+			}
+
+			if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_5) == 0)){
+				LED_TRACKER[0]=SetActiveTime;
+				LED_TRACKER[1]=SetActiveTime;
+			
+				while(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_5) == 0){};
+					
+				LED_ON_COUNTER=LED_ON_COUNTER+2;
+			}
+			if(LED_TRACKER[0]>0)
+				LED_TRACKER[0]--;
+			if(LED_TRACKER[1]>0)
+				LED_TRACKER[1]--;
+		
+			
+			
+			xtemp= LED_ON_COUNTER+'0';
+			if(LED_ON_COUNTER==0)
+				xtemp='0'+2;
+			
+			HAL_UART_Transmit(&huart1,&xtemp,sizeof(xtemp),HAL_MAX_DELAY);
+			HAL_UART_Transmit(&huart2,&xtemp,sizeof(xtemp),HAL_MAX_DELAY);
+			HAL_Delay(3000);
 
     /* USER CODE END WHILE */
 
