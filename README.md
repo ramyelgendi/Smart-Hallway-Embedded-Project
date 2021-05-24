@@ -44,6 +44,11 @@ The programmable chip is used to connect the nodes (which are the STM boards use
 
 ![ESP-32Chip](https://i.imgur.com/StXU5RU.jpg)
 
+### IR Sensor
+
+Infrared Sensor. Was used instead of PIR in the node responsible for counting how many people enter/exit because it has no delay. It is active low, when an obstacle is detected, the signal goes low.
+
+![ESP-32Chip](https://ram-e-shop.com/wp-content/uploads/2018/09/kit_object_ir.jpg)
 
 ### Microcontrollers:
 In this project, we will use two STM32 Nucleo boards because the number of pins needed exceeds the output pins available in one board. To begin with, there are 8 output pins for each LED to light up the hallway. Also, there are 8 pins for the 4x4 keypad used by the user to initialize the project settings. There are also 8 input pins reserved for each photodiode. Also, there are pins to be used for the UART protocols. Therefore, one microcontroller will be responsible for taking the user input and the LCD, and the other board will be connected to the LEDs and the photodiodes. 
@@ -79,7 +84,7 @@ Going into more detail, we have three central nodes: the server node, the entran
 
 ## Current Status:
 
-- We changed our web server chip from ESP8266 to ESP32 and we will use Arduino IDE to set up the web server, but all computations and other components will be linked to the stm32. We are currently working on the flow and will update the wiki page once we finish.
+- We finished the ESP32-S Server and client connections, and they are now working. The project is ready for demo.
 
 ## Demo Videos First Milestone:
 
@@ -88,7 +93,7 @@ Going into more detail, we have three central nodes: the server node, the entran
 
 ## Demo Video Final Milestone:
 
--  
+-  https://www.youtube.com/watch?v=rQcFynyWk3U
 
 ## Github repo:
 https://github.com/ramyelgendi/ES-Project2
