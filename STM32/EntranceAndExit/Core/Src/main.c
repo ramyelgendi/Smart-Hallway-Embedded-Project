@@ -27,6 +27,10 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+#define IR1_PORT GPIOB
+#define IR2_PORT GPIOB
+#define IR1_PIN GPIO_PIN_0
+#define IR2_PIN GPIO_PIN_4
 
 /* USER CODE END PTD */
 
@@ -96,18 +100,63 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+	int ppl_counter = 0;
+	uint8_t plus = '+';
+	uint8_t minus = '-';
+	uint8_t one = '1';
+	int counter = 0;
+	uint8_t two = '2';
+	int current_state = 0;	// 1 -> IR1 is on first    2-> IR2 is on first
+	int next_state = 1;	
+	int flag_first = 0;
+	uint8_t newline[2] = {'\n', '\r'};
+	uint8_t nums[10] = {'0','1','2','3','4','5','6','7','8','9'};
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+			if(HAL_GPIO_ReadPin(IR1_PORT,IR1_PIN) == 0){
+				HAL_Delay(700);
+				counter++;
+				if (counter%2 == 0) {
+					HAL_UART_Transmit(&huart2,(uint8_t*)"enter",sizeof("enter"),HAL_MAX_DELAY);
+					HAL_UART_Transmit(&huart2,newline,sizeof(newline),HAL_MAX_DELAY);
+					
+					if (ppl_counter < 9)
+						ppl_counter++;
+					
+					HAL_UART_Transmit(&huart2,&nums[ppl_counter],1,HAL_MAX_DELAY);
+					HAL_UART_Transmit(&huart1,&nums[ppl_counter],1,HAL_MAX_DELAY);
+					HAL_Delay(5000);
+					HAL_UART_Transmit(&huart2,newline,sizeof(newline),HAL_MAX_DELAY);
+				}
+					
+			}
+			
+			if(HAL_GPIO_ReadPin(IR2_PORT,IR2_PIN) == 0){
+				HAL_Delay(700);
+				counter++;
+				if (counter%2 == 0) {
+					HAL_UART_Transmit(&huart2,(uint8_t*)"exit",sizeof("exit"),HAL_MAX_DELAY);
+					HAL_UART_Transmit(&huart2,newline,sizeof(newline),HAL_MAX_DELAY);
+					if (ppl_counter > 0)
+						ppl_counter--;
+					
+					uint8_t x = (uint8_t) ppl_counter;
+					HAL_UART_Transmit(&huart2,&nums[ppl_counter],1,HAL_MAX_DELAY);
+					HAL_UART_Transmit(&huart1,&nums[ppl_counter],1,HAL_MAX_DELAY);
+					HAL_Delay(5000);
+					HAL_UART_Transmit(&huart2,newline,sizeof(newline),HAL_MAX_DELAY);
+				}
+			}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
   /* USER CODE END 3 */
+		}
 }
 
 /**
@@ -228,7 +277,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 1382400;
+  huart1.Init.BaudRate = 115200;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
@@ -263,7 +312,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 9600;
+  huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
