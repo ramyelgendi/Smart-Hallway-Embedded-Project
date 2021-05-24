@@ -25,7 +25,10 @@ SmartHallway is the future for smart buildings. Our project idea revolves around
 - First, in arduino files run the "GetReceiverBoardMAC" code to get the server's Mac address then paste it in the sender's code (also in arduino), specifically in the following files: "ESP32Node" and "ESP32EntranceExit"
 
 - Make sure to change all WiFi SSID and passwords in the code.
+- Make sure you have keil and arduino installed (use added arduino libraries in Arduino folders)
 - Run all of the arduino codes first, then connect to the STM using the connections shown in circuit diagram. 
+- Start by entering number of people on keypad, then the system will all connect and work automatically
+
 ## System Architecture
 
 ![System-Architecture](https://i.imgur.com/W02nOae.png)
