@@ -1,35 +1,45 @@
 ## Authors:
-* Eman Negm - 90070312
-* Ramy ElGendi - 900170269
-* Salma Wafa - 900170578
+* [Eman Negm](https://github.com/emannegm9)
+* [Ramy ElGendi](https://github.com/ramyelgendi)
+* [Salma Wafa](https://github.com/salmawafa)
 
 ## Proposed Idea and Flow
-SmartHallway is the future for smart buildings. Our project idea revolves around the need to save energy and electricity. Since hallway lights are an ever-lasting reason for energy loss, we have decided to solve this problem. The idea of the SmartHallway is a hallway that has detectors to be able to tell whether people are passing or not and where exactly they are. Based on that, it lights up an appropriate number of ceiling lights to help them see in the parts of the hallway they are passing through at any given moment in time. Otherwise, the lights are off. In order to spread awareness, there is also a screen in the hallway showing the amount of energy consumption, how many lights are on, and how much that costs. Also, the number of people in the hallway is constantly calculated and compared to the appropriate number according to the social-distancing restrictions. If the number of people exceeds that limit, a buzzer is turned on. 
-
-Going into more detail, we have a long hallway with 8 LEDs acting as ceiling lights. When someone is passing, that is detected using PIR sensor. There are 8 of those. When they detect someone passing in front of them, the ceiling light paired with the sensor lights up. These sensors are detecting objects at a very high rate to quickly respond to changes regardless of the speed of the passers. The number of people in the hallway is calculated by the sensors, too. This is done by incrementing the count when the first sensor detects an object and decrementing when the last one does (indicating a person has exited the hallway). The keypad is used to take user inputs and the LCD displays used to display the pre-set values by the user and more information about energy consumption, cost, the number of hallway lights that are on, the limit of people in the hallway, and the current count, etc. The user-input variables to the system are the dimensions of the hallway, which are used to calculate the appropriate number of people (limit) according to COVID-19 restrictions, as well as other details to further tailor the hallway to the user specifications.
+SmartHallway is the future for smart buildings. Our project idea revolves around the need to save energy and electricity. Since hallway lights are an ever-lasting reason for energy loss, we have decided to solve this problem. The idea of the SmartHallway is a hallway that has detectors to be able to tell whether people are passing or not and where they are. Based on that, it lights up an appropriate number of ceiling lights to help them see in the parts of the hallway they are passing through at any given moment in time. Otherwise, the lights are off. The hallway is monitored through a web server that shows the amount of energy consumption, how many lights are on, and how much that costs. Also, the number of people in the hallway is constantly calculated and compared to the appropriate number according to the social-distancing restrictions. If the number of people exceeds that limit, a buzzer is turned on. 
 
 ## Components
 ### Software
 * STM32CubeMX
 * Keil µVision
+* Arduino IDE
 
 ### Hardware
-* STM32L432KC MicroController Unit
-
-* 8x LEDs
+* 3x STM32L432KC MicroController Unit
+* 3x LEDs
 * 1x Buzzer
-* 8x PIR Sensors
+* 3x IR Sensors
 * 4x 1K Ohm Resistors
-* 16x2 LCD Display
 * 4x4 Keypad
-* Potentiometer
+* 3x ESP WROOM-32 Chips
 
+## How to build
+- First, in arduino files run the "GetReceiverBoardMAC" code to get the server's Mac address then paste it in the sender's code (also in arduino), specifically in the following files: "ESP32Node" and "ESP32EntranceExit"
+
+- Make sure to change all WiFi SSID and passwords in the code.
+- Run all of the arduino codes first, then connect to the STM using the connections shown in circuit diagram. 
 ## System Architecture
 
 ![System-Architecture](https://i.imgur.com/W02nOae.png)
 
 ### PIR Sensors:
 The passive infrared sensor (PIR sensor) is responsible for detecting any motion detection. Whenever any object passes by it, it sends a signal to the microcontroller that a moving object was detected. It is active high, which means that the output signal is low unless there is motion. In this setup, each PIR sensor has a corresponding LED. When a person moves, the PIR sensor produces an output signal and therefore action is taken by the MCU to produce the corresponding output signals to turn on the specified number of LEDs ahead of the moving person in the hallway. The LEDs are then turned off after a fixed amount of time after the person passes them.
+
+Click [Here](https://cdn-learn.adafruit.com/downloads/pdf/pir-passive-infrared-proximity-motion-sensor.pdf) for Datasheet.
+
+### ESP-32S NodeMCU:
+
+The programmable chip is used to connect the nodes (which are the STM boards used on different computers) using Wifi. The Chip was programmed on Arduino IDE just to send and receive data. No computation was done on this board, they were all done on the STM32.
+
+![ESP-32Chip](https://i.imgur.com/StXU5RU.jpg)
 
 
 ### Microcontrollers:
@@ -39,40 +49,51 @@ In this project, we will use two STM32 Nucleo boards because the number of pins 
 ### UART:
 The Universal Asynchronous Receiver/Transmitter protocol (UART) is used to communicate between the two microcontrollers. The board connected to the keypad will transform the user input to the other board. Also, the information regarding the energy consumption and its costs is sent to the board connected to the LCD.
 
-General flow:
-Each computer is connected to an STM32 L432KC MCU using UART2. The first one is connected to the circuit with the PIR sensors, LEDs, etc. (the hallway model), and the other to the LCD and the keypad (and its resistors). Both MCUs communicate together using UART. The user inputs the initial specifications which are received by the microcontroller connected directly to the keypad then transmits it to the other microcontroller to apply it to the LEDs. Whenever any interrupts occur to the system (people pass by), the second microcontroller detects the change and produces the corresponding output to this interrupt. It also transmits the needed information to the other board which is connected directly to the LCD, to display the updated costs and energy consumption. 
+Going into more detail, we have three central nodes: the server node, the entrance/exit node and the lights node. The entrance/exit node is responsible for counting the number of passengers in the hallway. This node is repeated at the ends of the hallway. Another main node is the lights node. This node is responsible for lighting up the LEDs for the passenger(s). The main node is called the server node. This node receives the number of passengers from the entrance/exit node and the number of LEDs turned on from the lights node. This node is also responsible for taking the user input (the max number of passengers in the hallway) and for activating the buzzer when the number of passengers exceed the threshold entered according to COVID-19 restrictions. Each node is connected to an ESP chip and they are all connected to the same network so that data can be sent/received between the nodes. The ESP chips are programmed using Arduino IDE.
 
 ## Circuit Design
 
-![Circuit-Design](https://i.imgur.com/Gbu8HSF.png)
+![Circuit-Design](https://i.imgur.com/ngX2gVb.png)
 
-### Key:
-- Orange: 8x PIR Sensors
-- Red: Buzzer
+## Limitations
 
-## Technical Challenges
+### Current:
+* Delay between ESP32s
+* PIR Sensor was used for the LEDs node but it stopped working at the last moments so we had to use IR sensors also on LED node. The code can be modified easily for PIR.
+* We only found 3 ESP32 nodes, therefore, we tried to fit our code (specially in demo) to work with 3. That is why we built our code in a modular way so that if we need to add more LEDs, we will just upload the LEDs code and it will work. Same thing if we want to add another entrance/exit for the hallway, we will just replicate the EntranceExit Node.
 
 ### Solved:
-* We were not able to use IR transmitters and receivers (needed a lens to direct the IR rays uniformly)
-* We used instead the PIR sensor (motion detector) which had unfamiliar aspects that we needed to setup such as sensitivity and delay
+* We were not able to use IR transmitters and receivers LEDs(needed a lens to direct the IR rays uniformly), is we used the IR Sensor Module
+* We used the PIR sensor (motion detector) which had unfamiliar aspects that we needed to setup such as sensitivity and delay
 * We used a 4x4 keypad which requires not so simple connections, so we developed a class for it to detect the GPIO pins connected to the rows and columns and outputs the corresponding key pressed in an array.
+* We used ESP32 to send and receive via ESP-Now protocol, which works on WiFi.
+* Our ESP32 chip had a bug that the code was not being uploaded to it. We fixed it by connecting a 10microF capacitor to the enable pin.
 
-### Unsolved:
-* UART connection between both microcontrollers
-* LCD Display 
+### Future Work:
+* Fix delay between ESP32 sending and receiving
+* Upload data on web server instead of displaying over terra-term
+* Modify PIR code for LED node.
 
 ## Current Status:
 
-So far, in the hallway unit, we have set up the first and last PIR sensors (2 out of 8). If they detect an object, their corresponding LEDs light up. Also, when the limit of number of people is received or exceeded, the buzzer is turned on. 
+- We changed our web server chip from ESP8266 to ESP32 and we will use Arduino IDE to set up the web server, but all computations and other components will be linked to the stm32. We are currently working on the flow and will update the wiki page once we finish.
 
-In the control unit, the keypad is used to enter the limit of number of people and the number of light bulbs to light up for an individual. The LCD is set up, however, it is not fully complete now. Instead, the user is prompted and is able to see the data inputted on TeraTerm.
+## Demo Videos First Milestone:
 
-## Demo Videos:
+-  Control unit: https://youtu.be/_R8E__G3rLY
+-  Hallway unit: https://drive.google.com/file/d/1LbL7LdtcYgN_8OKbb80ukJCqRX-63Dz0/view?usp=sharing
 
-### Control unit: https://youtu.be/_R8E__G3rLY
-### Hallway unit: https://drive.google.com/file/d/1LbL7LdtcYgN_8OKbb80ukJCqRX-63Dz0/view?usp=sharing
+## Demo Video Final Milestone:
+
+-  
 
 ## Github repo:
 https://github.com/ramyelgendi/ES-Project2
+
+## References:
+https://randomnerdtutorials.com/esp32-esp-now-wi-fi-web-server/
+https://circuits4you.com/2018/12/31/esp32-hardware-serial2-example/
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/uart.html
+https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf
 
 ## Thank you!
