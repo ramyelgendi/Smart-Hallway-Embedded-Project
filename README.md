@@ -31,7 +31,7 @@ SmartHallway is the future for smart buildings. Our project idea revolves around
 
 ## System Architecture
 
-![System-Architecture](https://i.imgur.com/W02nOae.png)
+![System-Architecture](https://i.imgur.com/C22ZSu9.png)
 
 ### PIR Sensors:
 The passive infrared sensor (PIR sensor) is responsible for detecting any motion detection. Whenever any object passes by it, it sends a signal to the microcontroller that a moving object was detected. It is active high, which means that the output signal is low unless there is motion. In this setup, each PIR sensor has a corresponding LED. When a person moves, the PIR sensor produces an output signal and therefore action is taken by the MCU to produce the corresponding output signals to turn on the specified number of LEDs ahead of the moving person in the hallway. The LEDs are then turned off after a fixed amount of time after the person passes them.
