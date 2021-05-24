@@ -100,8 +100,12 @@ void loop() {
     myData.id = BOARD_ID;
 
     int temp;
-   if(Serial.available()) temp = Serial.read();
-   else temp = '0';
+   if(Serial.available()) 
+    temp = Serial.read();
+    if(temp!= '0' && temp!='2')
+      temp='0';
+   else
+      temp = '0';
    
      myData.value = temp;
      myData.type='L';
