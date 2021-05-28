@@ -31,7 +31,9 @@ SmartHallway is the future for smart buildings. Our project idea revolves around
 
 ## System Architecture
 
-![System-Architecture](https://i.imgur.com/C22ZSu9.png)
+![System-Architecture](https://i.imgur.com/Z7V5YnO.png)
+
+Note: The connection between each ESP-32 and STM Nucleoboard is done over UART1 and TerraTerm is used for the user-interface on the right-most computer.
 
 ### PIR Sensors:
 The passive infrared sensor (PIR sensor) is responsible for detecting any motion detection. Whenever any object passes by it, it sends a signal to the microcontroller that a moving object was detected. It is active high, which means that the output signal is low unless there is motion. In this setup, each PIR sensor has a corresponding LED. When a person moves, the PIR sensor produces an output signal and therefore action is taken by the MCU to produce the corresponding output signals to turn on the specified number of LEDs ahead of the moving person in the hallway. The LEDs are then turned off after a fixed amount of time after the person passes them.
@@ -96,7 +98,7 @@ Going into more detail, we have three central nodes: the server node, the entran
 -  https://www.youtube.com/watch?v=rQcFynyWk3U
 
 ## Github repo:
-https://github.com/ramyelgendi/ES-Project2
+https://github.com/ramyelgendi/Smart-Hallway-Embedded-Project
 
 ## References:
 https://randomnerdtutorials.com/esp32-esp-now-wi-fi-web-server/
